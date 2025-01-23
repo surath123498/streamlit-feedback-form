@@ -12,13 +12,13 @@ def save_feedback(name, rating, feedback):
     csv_path = os.path.join(storage_path, "feedback.csv")
     new_entry = pd.DataFrame({"Name": [name], "Rating": [rating], "Feedback": [feedback]})
 
+    # Check if the file exists
     if os.path.exists(csv_path):
-        existing_data = pd.read_csv(csv_path)
-        combined_data = pd.concat([existing_data, new_entry], ignore_index=True)
+        # Append new data without writing the header
+        new_entry.to_csv(csv_path, index=False, mode="a", header=False, sep=";")
     else:
-        combined_data = new_entry
-
-    combined_data.to_csv(csv_path, index=False)
+        # Create a new file with the header
+        new_entry.to_csv(csv_path, index=False, mode="w", header=True, sep=";")
 
 # Streamlit App
 st.title("Experience World Feedback Form")
