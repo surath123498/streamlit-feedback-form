@@ -21,7 +21,7 @@ def save_feedback(name, rating, feedback):
     combined_data.to_csv(csv_path, index=False)
 
 # Streamlit App
-st.title("Feedback Form")
+st.title("Experience World Feedback Form")
 
 with st.form("feedback_form"):
     name = st.text_input("Name", placeholder="Your name..", max_chars=50)
