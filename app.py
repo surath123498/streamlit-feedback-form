@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import os
+import time
 from streamlit_star_rating import st_star_rating  # Import the star rating widget
 
 # Define the storage path
@@ -44,7 +45,14 @@ with st.form("feedback_form"):
     if submitted:
         if name.strip() and feedback.strip():
             save_feedback(name, rating, feedback)
-            st.success(f"Thank you for your feedback! You rated the app {rating} star{'s' if rating > 1 else ''}.")
+            st.success(f"Thank you for your feedback! You rated us {rating} star{'s' if rating > 1 else ''}.")
+            time.sleep(3)  # Wait for 3 seconds
+            st.markdown(
+                """
+                <meta http-equiv="refresh" content="0">
+                """,
+                unsafe_allow_html=True,
+            )
         else:
             st.error("Please fill out all fields before submitting.")
 
