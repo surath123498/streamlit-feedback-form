@@ -1,25 +1,20 @@
 import streamlit as st
-import pandas as pd
-import os
 import time
-from streamlit_star_rating import st_star_rating  # Import the star rating widget
+from streamlit_star_rating import st_star_rating
+from pymongo import MongoClient
 
-# Define the storage path
-storage_path = r"C:\Users\CHS8SH\Streamlit\Feedback"
-if not os.path.exists(storage_path):
-    os.makedirs(storage_path)
+# Corrected MongoDB URI (disabled retryable writes)
+MONGO_URI = "mongodb://experience_world:EW%402025@10.58.114.165:27017/admin?ssl=false&directConnection=true&retryWrites=false"
+client = MongoClient(MONGO_URI)
 
-def save_feedback(name, rating, feedback):
-    csv_path = os.path.join(storage_path, "feedback.csv")
-    new_entry = pd.DataFrame({"Name": [name], "Rating": [rating], "Feedback": [feedback]})
+# Use the existing "local" database and "EW_feedbacks" collection
+db = client["local"]
+collection = db["EW_feedbacks"]
 
-    # Check if the file exists
-    if os.path.exists(csv_path):
-        # Append new data without writing the header
-        new_entry.to_csv(csv_path, index=False, mode="a", header=False, sep=";")
-    else:
-        # Create a new file with the header
-        new_entry.to_csv(csv_path, index=False, mode="w", header=True, sep=";")
+# Function to save feedback to MongoDB
+def save_feedback_to_mongodb(name, rating, feedback):
+    feedback_data = {"name": name, "rating": rating, "feedback": feedback}
+    collection.insert_one(feedback_data)  # Insert into MongoDB
 
 # Streamlit App
 st.title("Experience World Feedback Form")
@@ -27,24 +22,24 @@ st.title("Experience World Feedback Form")
 with st.form("feedback_form"):
     name = st.text_input("Name", placeholder="Your name..", max_chars=50)
 
-    # Use the st_star_rating widget
+    # Star Rating Widget
     st.write("Please rate your overall experience with us:")
     rating = st_star_rating(
-        label=None,              # Optional label
-        maxValue=5,              # Number of stars
-        defaultValue=0,          # Default selected stars
-        size=30,                 # Size of the stars
-        emoticons=False,         # Use stars instead of emoticons
-        dark_theme=False,        # Light theme
+        label=None,
+        maxValue=5,
+        defaultValue=0,
+        size=30,
+        emoticons=False,
+        dark_theme=False,
     )
 
     feedback = st.text_area("Feedback", placeholder="Write something...")
-    
+
     # Submit button
     submitted = st.form_submit_button("Submit")
     if submitted:
         if name.strip() and feedback.strip():
-            save_feedback(name, rating, feedback)
+            save_feedback_to_mongodb(name, rating, feedback)
             st.success(f"Thank you for your feedback! You rated us {rating} star{'s' if rating > 1 else ''}.")
             time.sleep(3)  # Wait for 3 seconds
             st.markdown(
@@ -55,13 +50,3 @@ with st.form("feedback_form"):
             )
         else:
             st.error("Please fill out all fields before submitting.")
-
-st.markdown("---")
-st.header("Download Feedback Data")
-
-csv_path = os.path.join(storage_path, "feedback.csv")
-if os.path.exists(csv_path):
-    with open(csv_path, "rb") as file:
-        st.download_button("Download Feedback CSV", file, file_name="feedback.csv", mime="text/csv")
-else:
-    st.info("No feedback data available yet.")
