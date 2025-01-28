@@ -1,3 +1,4 @@
 pandas
 streamlit
 st-star-rating
+pymongo
