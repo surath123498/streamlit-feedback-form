@@ -52,3 +52,14 @@ with st.form("feedback_form"):
             )
         else:
             st.error("Please fill out all fields before submitting.")
+
+st.markdown(
+    """
+    <div style="margin-top: 20px; padding: 15px; border: 2px solid #e8e8e8; background-color: #ffffff; border-radius: 8px;">
+        <strong style="font-size: 16px;">⚠️ Please do not enter any personal or sensitive data.</strong><br>
+        Alternatively, you can send us an email at experience.world@bcn.bosch.com
+        </span>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
