@@ -2,6 +2,7 @@ import streamlit as st
 import time
 from streamlit_star_rating import st_star_rating
 from pymongo import MongoClient
+import base64
 
 # Corrected MongoDB URI (disabled retryable writes)
 MONGO_URI = "mongodb://experience_world:EW%402025@10.58.114.165:27017/admin?ssl=false&directConnection=true&retryWrites=false"
