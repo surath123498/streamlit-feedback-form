@@ -16,6 +16,8 @@ def save_feedback_to_mongodb(name, rating, feedback):
     feedback_data = {"name": name, "rating": rating, "feedback": feedback}
     collection.insert_one(feedback_data)  # Insert into MongoDB
 
+st.image("Logo.png", use_container_width=True)
+
 # Streamlit App
 st.title("Experience World Feedback Form")
 
