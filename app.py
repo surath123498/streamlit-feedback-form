@@ -16,7 +16,26 @@ def save_feedback_to_mongodb(name, rating, feedback):
     feedback_data = {"name": name, "rating": rating, "feedback": feedback}
     collection.insert_one(feedback_data)  # Insert into MongoDB
 
-st.image("Logo.png", use_container_width=True)
+def get_base64_encoded_image(image_path):
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
+
+image_base64 = get_base64_encoded_image("Logo.png")
+
+st.markdown(
+    f"""
+    <style>
+        .custom-image {{
+            display: block;
+            width: 100%;  /* Full width of the form */
+            max-width: 500px; /* Optional: Prevents it from being too large */
+            margin: 0 auto; /* Centers the image */
+        }}
+    </style>
+    <img src="data:image/png;base64,{image_base64}" class="custom-image">
+    """,
+    unsafe_allow_html=True
+)
 
 # Streamlit App
 st.title("Experience World Feedback Form")
